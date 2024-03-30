@@ -19,6 +19,8 @@
         <module>mall-apollo-common</module>
         <module>mall-apollo-admin</module>
         <module>mall-apollo-gateway</module>
+        <module>mall-apollo-mbg</module>
+        <module>mall-apollo-auth</module>
     </modules>
 
     <properties>
@@ -111,8 +113,8 @@
             </dependency>
             <!--mall中MBG生成模块-->
             <dependency>
-                <groupId>com.macro.mall</groupId>
-                <artifactId>mall-mbg</artifactId>
+                <groupId>com.moli.mall</groupId>
+                <artifactId>mall-apollo-mbg</artifactId>
                 <version>${mall-mbg.version}</version>
             </dependency>
             <!--MyBatis分页插件starter-->

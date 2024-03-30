@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.admin.dao.UmsAdminRoleRelationDao">
+    <select id="getRoleList" resultType="com.moli.mall.mbg.model.UmsRole">
+        select
+        ur.id as id,
+        ur.name as name,
+        ur.description as description,
+        ur.admin_count as admin_count,
+        ur.create_time as create_time,
+        ur.status as status,
+        ur.sort as sort
+        from ums_admin_role_relation uarr
+        left join ums_admin ua on uarr.admin_id = ua.id
+        left join ums_role ur on uarr.role_id = ur.id
+        where admin_id = #{adminId}
+    </select>
+</mapper>

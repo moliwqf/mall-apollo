@@ -1,0 +1,42 @@
+server:
+  port: 8201
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 设置为true启用服务发现定位器
+          lower-case-service-id: true # 开启小写模式
+      routes:
+        - id: mall-admin
+          uri: lb://mall-admin
+          predicates:
+            - Path=/mall-admin/**
+          filters:
+            - StripPrefix=1
+        - id: mall-auth
+          uri: lb://mall-auth
+          predicates:
+            - Path=/mall-auth/**
+          filters:
+            - StripPrefix=1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:8201/mall-auth/rsa/publicKey' #配置RSA的公钥访问地址
+  redis:
+    port: 6379
+    host: localhost
+    password:
+
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/doc.html"
+      - "/mall-auth/rsa/publicKey"
+      - "/mall-admin/admin/login"
+      - "/mall-admin/admin/register"
