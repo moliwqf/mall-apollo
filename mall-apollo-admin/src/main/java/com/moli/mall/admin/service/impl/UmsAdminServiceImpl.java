@@ -62,7 +62,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public CommonResult<?> login(String username, String password) {
         if (!StrUtil.isAllNotEmpty(username, password)) {
-            AssetsUtil.fail("用户名或密码不能为空~");// TODO 自定义异常信息
+            AssetsUtil.fail("用户名或密码不能为空~");
         }
         Map<String, String> params = new HashMap<>();
         params.put(AuthConstant.CLIENT_ID_PARAM, AuthConstant.ADMIN_CLIENT_ID);
@@ -70,7 +70,6 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         params.put(AuthConstant.GRANT_TYPE_PARAM, AuthConstant.PASSWORD_GRANT_TYPE);
         params.put(AuthConstant.USERNAME_PARAM, username);
         params.put(AuthConstant.PASSWORD_PARAM, password);
-        // 远程调用auth服务进行验证获取token TODO
         return authService.getAccessToken(params);
     }
 
