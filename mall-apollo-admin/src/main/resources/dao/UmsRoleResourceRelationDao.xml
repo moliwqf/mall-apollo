@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.admin.dao.UmsRoleResourceRelationDao">
+    <insert id="insertList">
+        insert into ums_role_resource_relation (role_id, resource_id)
+        values
+        <foreach collection="relationList" index="index" item="item" separator=",">
+            (#{item.roleId, jdbcType=BIGINT}, #{item.resourceId, jdbcType=BIGINT})
+        </foreach>
+    </insert>
+    <select id="listResourcesByRoleId" resultType="com.moli.mall.mbg.model.UmsResource">
+        select
+            ur.id id,
+            ur.create_time createTime,
+            ur.name name,
+            ur.url url,
+            ur.description description,
+            ur.category_id categoryId
+        from ums_role_resource_relation urrr
+        left join ums_resource ur on urrr.resource_id = ur.id
+        where urrr.role_id = #{roleId}
+    </select>
+</mapper>

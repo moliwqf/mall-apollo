@@ -91,4 +91,9 @@ public interface AuthConstant {
      * 用户信息Http请求头
      */
     String USER_TOKEN_HEADER = "user";
+
+    /**
+     * Redis缓存权限规则key
+     */
+    String RESOURCE_ROLES_MAP_KEY = "auth:resourceRolesMap";
 }

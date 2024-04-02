@@ -2,6 +2,7 @@ package com.moli.mall.admin.service;
 
 import com.moli.mall.admin.dto.UmsAdminParams;
 import com.moli.mall.admin.vo.UmsAdminNameIconWithMenusAndRolesVo;
+import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
 import com.moli.mall.common.dto.UserDto;
 import com.moli.mall.mbg.model.UmsAdmin;
@@ -65,4 +66,36 @@ public interface UmsAdminService {
      * 获取用户界面信息
      */
     CommonResult<UmsAdminNameIconWithMenusAndRolesVo> info();
+
+    /**
+     * 分页获取后台用户信息
+     * @param pageNum 当前页
+     * @param pageSize 页大小
+     * @param keyword 关键字
+     * @return 分页信息
+     */
+    CommonResult<CommonPage<UmsAdmin>> list(Integer pageNum, Integer pageSize, String keyword);
+
+    /**
+     * 更新后台用户的角色列表
+     * @param adminId 用户id
+     * @param roleIdList 角色列表id
+     * @return 更新的行数
+     */
+    int updateRoleList(Long adminId, List<Long> roleIdList);
+
+    /**
+     * 更新指定的后台用户
+     * @param adminId 用户id
+     * @param umsAdmin 用户信息
+     * @return 更新的行数
+     */
+    int updateAdmin(Long adminId, UmsAdmin umsAdmin);
+
+    /**
+     * 删除后台用户
+     * @param adminId 用户id
+     * @return 更新的行数
+     */
+    int deleteAdmin(Long adminId);
 }

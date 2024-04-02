@@ -19,4 +19,20 @@
         where uarr.admin_id = #{adminId} and um.id is not NULL
         group by um.id
     </select>
+    <select id="listMenuByRoleId" resultType="com.moli.mall.mbg.model.UmsMenu">
+        select
+            um.id id,
+            um.parent_id parentId,
+            um.create_time createTime,
+            um.title title,
+            um.level level,
+            um.sort sort,
+            um.name name,
+            um.icon icon,
+            um.hidden hidden
+        from ums_role_menu_relation urmr
+            left join ums_role ur on urmr.role_id = ur.id
+            left join ums_menu um on urmr.menu_id = um.id
+        where ur.id = #{roleId} and status = 1
+    </select>
 </mapper>

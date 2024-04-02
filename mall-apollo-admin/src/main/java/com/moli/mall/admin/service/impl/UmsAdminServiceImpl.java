@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
+import com.github.pagehelper.PageHelper;
 import com.moli.mall.admin.dao.UmsAdminRoleRelationDao;
 import com.moli.mall.admin.dao.UmsRoleDao;
 import com.moli.mall.admin.dto.UmsAdminParams;
@@ -12,20 +13,20 @@ import com.moli.mall.admin.service.UmsAdminCacheService;
 import com.moli.mall.admin.service.UmsAdminService;
 import com.moli.mall.admin.vo.UmsAdminNameIconWithMenusAndRolesVo;
 import com.moli.mall.common.constant.AuthConstant;
+import com.moli.mall.common.constant.CommonStatus;
 import com.moli.mall.common.constant.ResultCode;
-import com.moli.mall.common.constant.UserStatus;
+import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
 import com.moli.mall.common.dto.UserDto;
 import com.moli.mall.common.utils.AssetsUtil;
 import com.moli.mall.common.utils.BeanCopyUtil;
 import com.moli.mall.mbg.mapper.UmsAdminMapper;
 import com.moli.mall.mbg.mapper.UmsAdminRoleRelationMapper;
-import com.moli.mall.mbg.model.UmsAdmin;
-import com.moli.mall.mbg.model.UmsAdminExample;
-import com.moli.mall.mbg.model.UmsMenu;
-import com.moli.mall.mbg.model.UmsRole;
+import com.moli.mall.mbg.model.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public CommonResult<?> login(String username, String password) {
         if (!StrUtil.isAllNotEmpty(username, password)) {
-            throw new RuntimeException("用户名或密码不能为空~"); // TODO 自定义异常信息
+            AssetsUtil.fail("用户名或密码不能为空~");// TODO 自定义异常信息
         }
         Map<String, String> params = new HashMap<>();
         params.put(AuthConstant.CLIENT_ID_PARAM, AuthConstant.ADMIN_CLIENT_ID);
@@ -111,7 +112,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         UmsAdmin umsAdmin = BeanCopyUtil.copyBean(umsAdminParams, UmsAdmin.class);
         assert umsAdmin != null;
         umsAdmin.setCreateTime(new Date());
-        umsAdmin.setStatus(UserStatus.NORMAL.getCode());
+        umsAdmin.setStatus(CommonStatus.NORMAL.getCode());
 
         // 查询是否存在该用户
         UmsAdminExample adminExample = new UmsAdminExample();
@@ -170,5 +171,81 @@ public class UmsAdminServiceImpl implements UmsAdminService {
                 .roleList(roleNameList)
                 .build();
         return CommonResult.success(adminVo);
+    }
+
+    @Override
+    public CommonResult<CommonPage<UmsAdmin>> list(Integer pageNum,
+                                                   Integer pageSize,
+                                                   String keyword) {
+        UmsAdminExample adminExample = new UmsAdminExample();
+        // 开启分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        if (StringUtils.hasLength(keyword)) {
+            adminExample.createCriteria().andUsernameLike("%" + keyword + "%");
+        }
+        List<UmsAdmin> res = umsAdminMapper.selectByExample(adminExample);
+        // 创建分页对象
+        CommonPage<UmsAdmin> page = CommonPage.restPage(res);
+        return CommonResult.success(page);
+    }
+
+    @Override
+    @Transactional
+    public int updateRoleList(Long adminId, List<Long> roleIdList) {
+        if (Objects.isNull(adminId)) {
+            AssetsUtil.fail("用户id不能为空!!!!");
+        }
+        int count = CollectionUtils.isEmpty(roleIdList) ? 0 : roleIdList.size();
+        // 删除所有与adminId相关的角色信息
+        UmsAdminRoleRelationExample umsAdminRoleRelationExample = new UmsAdminRoleRelationExample();
+        umsAdminRoleRelationExample.createCriteria().andAdminIdEqualTo(adminId);
+        umsAdminRoleRelationMapper.deleteByExample(umsAdminRoleRelationExample);
+
+        // 添加新的角色列表信息
+        if (!CollectionUtils.isEmpty(roleIdList)) {
+            List<UmsAdminRoleRelation> adminRoleRelationList = new ArrayList<>();
+            for (Long roleId : roleIdList) {
+                UmsAdminRoleRelation adminRoleRelation = new UmsAdminRoleRelation();
+                adminRoleRelation.setAdminId(adminId);
+                adminRoleRelation.setRoleId(roleId);
+                adminRoleRelationList.add(adminRoleRelation);
+            }
+            umsAdminRoleRelationDao.insertList(adminRoleRelationList);
+        }
+        return count;
+    }
+
+    @Override
+    @Transactional
+    public int updateAdmin(Long adminId, UmsAdmin umsAdmin) {
+        // 查询用户信息
+        UmsAdmin rawAdmin = umsAdminMapper.selectByPrimaryKey(adminId);
+        if (Objects.isNull(rawAdmin) || Objects.equals(rawAdmin.getStatus(), CommonStatus.DISABLE.getCode())) {
+            AssetsUtil.fail("用户不存在或已被禁用，无法修改！！！");
+        }
+        umsAdmin.setId(adminId);
+        // 判断密码
+        String rawPassword = rawAdmin.getPassword();
+        String newPassword = umsAdmin.getPassword();
+        if (rawPassword.equals(newPassword) || StrUtil.isEmpty(newPassword)) {
+            umsAdmin.setPassword(null); // 不进行修改
+        } else {
+            // 加密修改密码
+            String hashPassword = BCrypt.hashpw(newPassword);
+            umsAdmin.setPassword(hashPassword);
+        }
+        int count = umsAdminMapper.updateByPrimaryKeySelective(umsAdmin);
+        // 删除缓存 cache aside pattern
+        getUmsAdminCacheService().delAdmin(adminId);
+        return count;
+    }
+
+    @Override
+    @Transactional
+    public int deleteAdmin(Long adminId) {
+        int count = umsAdminMapper.deleteByPrimaryKey(adminId);
+        // 删除缓存 cache aside pattern
+        getUmsAdminCacheService().delAdmin(adminId);
+        return count;
     }
 }

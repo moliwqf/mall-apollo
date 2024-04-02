@@ -69,7 +69,7 @@ public class ResourceServerConfig {
                 .and().exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler) // 配置访问拒绝策略
                 .authenticationEntryPoint(authEntryPoint) // 配置认证失败策略
-                .and().csrf().disable(); // 进制csrf
+                .and().csrf().disable(); // 禁止csrf
         return http.build();
     }
 

@@ -41,7 +41,7 @@ public class BeanCopyUtil {
      * @param target  目标集合中的对象类型
      * @return List
      */
-    public static <T> List<T> copyBeanList(List<Object> srcList, Class<T> target) {
+    public static <T> List<T> copyBeanList(List<?> srcList, Class<T> target) {
         List<T> ret = new ArrayList<>();
         if (CollectionUtils.isEmpty(srcList)) return ret;
         for (Object srcObj : srcList) {

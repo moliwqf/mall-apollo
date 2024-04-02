@@ -22,6 +22,14 @@ public class UmsRoleResourceRelation implements Serializable {
     @ApiModelProperty(value = "资源ID")
     private Long resourceId;
 
+    public UmsRoleResourceRelation() {
+    }
+
+    public UmsRoleResourceRelation(Long roleId, Long resourceId) {
+        this.roleId = roleId;
+        this.resourceId = resourceId;
+    }
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {

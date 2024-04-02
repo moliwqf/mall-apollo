@@ -1,6 +1,7 @@
 package com.moli.mall.admin.dao;
 
 import com.moli.mall.mbg.model.UmsMenu;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,5 +18,12 @@ public interface UmsRoleDao {
      * 读取用户的菜单列表
      * @param adminId 用户id
      */
-    List<UmsMenu> readMenuList(Long adminId);
+    List<UmsMenu> readMenuList(@Param("adminId") Long adminId);
+
+    /**
+     * 根据角色id获取其菜单信息
+     * @param roleId 角色id
+     * @return 菜单信息
+     */
+    List<UmsMenu> listMenuByRoleId(@Param("roleId") Long roleId);
 }

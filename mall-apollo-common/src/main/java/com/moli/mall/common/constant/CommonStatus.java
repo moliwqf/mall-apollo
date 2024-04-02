@@ -8,7 +8,7 @@ import lombok.Getter;
  * @description 用户状态
  */
 @Getter
-public enum UserStatus {
+public enum CommonStatus {
 
     NORMAL(1, "正常状态"),
 
@@ -18,7 +18,7 @@ public enum UserStatus {
 
     private final String desc;
 
-    UserStatus(Integer code, String desc) {
+    CommonStatus(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
     }
