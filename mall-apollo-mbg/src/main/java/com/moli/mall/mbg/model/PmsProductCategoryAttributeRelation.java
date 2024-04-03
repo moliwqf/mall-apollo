@@ -12,6 +12,13 @@ public class PmsProductCategoryAttributeRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public PmsProductCategoryAttributeRelation() {}
+
+    public PmsProductCategoryAttributeRelation(Long productCategoryId, Long productAttributeId) {
+        this.productAttributeId = productAttributeId;
+        this.productCategoryId = productCategoryId;
+    }
+
     public Long getId() {
         return id;
     }

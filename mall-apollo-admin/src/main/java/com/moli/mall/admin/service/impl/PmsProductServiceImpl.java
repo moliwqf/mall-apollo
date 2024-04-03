@@ -174,15 +174,17 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Transactional
     public int update(Long id, PmsProductParams productParam) {
         // 查询是否存在该商品
-        PmsProduct rawProduct = pmsProductMapper.selectByPrimaryKey(id);
-        if (Objects.isNull(rawProduct)) {
+        PmsProductExample pmsProductExample = new PmsProductExample();
+        pmsProductExample.createCriteria().andDeleteStatusEqualTo(0).andIdEqualTo(id);
+        List<PmsProduct> rawProducts = pmsProductMapper.selectByExample(pmsProductExample);
+        if (CollectionUtils.isEmpty(rawProducts)) {
             AssetsUtil.fail("商品不存在!!");
         }
 
         // 更新产品信息
         productParam.setId(id);
         PmsProduct newProduct = BeanCopyUtil.copyBean(productParam, PmsProduct.class);
-        int count = pmsProductMapper.updateByPrimaryKey(newProduct);
+        int count = pmsProductMapper.updateByPrimaryKeySelective(newProduct);
 
         CompletableFuture<Void> laddersFuture = CompletableFuture.runAsync(() -> {
             // 商品阶梯价格设置
@@ -451,7 +453,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         statusProduct.setDeleteStatus(deleteStatus);
         PmsProductExample pmsProductExample = new PmsProductExample();
         pmsProductExample.createCriteria().andIdIn(ids);
-        return pmsProductMapper.updateByExample(statusProduct, pmsProductExample);
+        return pmsProductMapper.updateByExampleSelective(statusProduct, pmsProductExample);
     }
 
     @Override
@@ -461,7 +463,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         statusProduct.setRecommandStatus(recommendStatus);
         PmsProductExample pmsProductExample = new PmsProductExample();
         pmsProductExample.createCriteria().andIdIn(ids);
-        return pmsProductMapper.updateByExample(statusProduct, pmsProductExample);
+        return pmsProductMapper.updateByExampleSelective(statusProduct, pmsProductExample);
     }
 
 
@@ -473,7 +475,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         statusProduct.setDetailDesc(detail);
         PmsProductExample pmsProductExample = new PmsProductExample();
         pmsProductExample.createCriteria().andIdIn(ids);
-        return pmsProductMapper.updateByExample(statusProduct, pmsProductExample);
+        return pmsProductMapper.updateByExampleSelective(statusProduct, pmsProductExample);
     }
 
     @Override
@@ -483,7 +485,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         statusProduct.setPublishStatus(publishStatus);
         PmsProductExample pmsProductExample = new PmsProductExample();
         pmsProductExample.createCriteria().andIdIn(ids);
-        return pmsProductMapper.updateByExample(statusProduct, pmsProductExample);
+        return pmsProductMapper.updateByExampleSelective(statusProduct, pmsProductExample);
     }
 
     @Override
@@ -493,7 +495,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         statusProduct.setNewStatus(newStatus);
         PmsProductExample pmsProductExample = new PmsProductExample();
         pmsProductExample.createCriteria().andIdIn(ids);
-        return pmsProductMapper.updateByExample(statusProduct, pmsProductExample);
+        return pmsProductMapper.updateByExampleSelective(statusProduct, pmsProductExample);
     }
 
     @Override
@@ -532,7 +534,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         if (Objects.isNull(productQueryParams)) return productExample;
 
         PmsProductExample.Criteria criteria = productExample.createCriteria();
-
+        criteria.andDeleteStatusEqualTo(0);
         if (!Objects.isNull(productQueryParams.getPublishStatus())) {
             criteria.andPublishStatusEqualTo(productQueryParams.getPublishStatus());
         }

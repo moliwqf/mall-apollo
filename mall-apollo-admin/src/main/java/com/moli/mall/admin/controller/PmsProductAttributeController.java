@@ -2,6 +2,7 @@ package com.moli.mall.admin.controller;
 
 import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.service.PmsProductAttributeService;
+import com.moli.mall.admin.vo.ProductAttrInfoVo;
 import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
 import com.moli.mall.mbg.model.PmsProductAttribute;
@@ -26,6 +27,13 @@ public class PmsProductAttributeController {
 
     @Resource
     private PmsProductAttributeService pmsProductAttributeService;
+
+    @ApiOperation("根据商品分类的id获取商品属性及属性分类")
+    @GetMapping("/attrInfo/{productCategoryId}")
+    public CommonResult<List<ProductAttrInfoVo>> getAttrInfo(@PathVariable Long productCategoryId) {
+        List<ProductAttrInfoVo> productAttrInfoList = pmsProductAttributeService.getProductAttrInfo(productCategoryId);
+        return CommonResult.success(productAttrInfoList);
+    }
 
     @ApiOperation("根据分类查询属性列表或参数列表")
     @ApiImplicitParams({@ApiImplicitParam(name = "type", value = "0表示属性，1表示参数", required = true, paramType = "query", dataType = "integer")})

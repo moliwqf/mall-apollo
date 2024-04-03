@@ -1,8 +1,11 @@
 package com.moli.mall.mbg.model;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
+@NoArgsConstructor
 public class PmsBrand implements Serializable {
     private Long id;
 
@@ -67,6 +70,11 @@ public class PmsBrand implements Serializable {
      */
     @ApiModelProperty(value = "品牌故事")
     private String brandStory;
+
+    public PmsBrand(Long id, Integer showStatus) {
+        this.id = id;
+        this.showStatus = showStatus;
+    }
 
     private static final long serialVersionUID = 1L;
 

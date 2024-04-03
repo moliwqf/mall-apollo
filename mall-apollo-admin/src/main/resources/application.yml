@@ -31,3 +31,12 @@ redis:
   key:
     prefix:
       admin: 'ums:admin'
+
+upload:
+  mode: minio
+  minio:
+    url: http://minio.wterrissqf.top/
+    endpoint: http://minio.wterrissqf.top/
+    access-key: minio_admin
+    secret-key: Terrissminio03
+    bucket-name: mall-apollo

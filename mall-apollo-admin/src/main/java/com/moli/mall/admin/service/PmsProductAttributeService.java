@@ -1,5 +1,6 @@
 package com.moli.mall.admin.service;
 
+import com.moli.mall.admin.vo.ProductAttrInfoVo;
 import com.moli.mall.mbg.model.PmsProductAttribute;
 
 import java.util.List;
@@ -19,4 +20,11 @@ public interface PmsProductAttributeService {
      * @return PmsProductAttribute
      */
     List<PmsProductAttribute> getList(Long cid, Integer type, Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取产品分类对应的信息
+     * @param productCategoryId
+     * @return
+     */
+    List<ProductAttrInfoVo> getProductAttrInfo(Long productCategoryId);
 }

@@ -18,4 +18,9 @@ public interface PmsSkuStockDao {
      * @param skuStockList 库存信息
      */
     int insertList(@Param("skuStockList") List<PmsSkuStock> skuStockList);
+
+    /**
+     * 添加或更新sku
+     */
+    int replaceList(@Param("skuStockList") List<PmsSkuStock> skuStockList);
 }

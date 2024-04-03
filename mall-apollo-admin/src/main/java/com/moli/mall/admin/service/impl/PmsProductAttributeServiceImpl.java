@@ -1,7 +1,9 @@
 package com.moli.mall.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.moli.mall.admin.dao.PmsProductAttributeDao;
 import com.moli.mall.admin.service.PmsProductAttributeService;
+import com.moli.mall.admin.vo.ProductAttrInfoVo;
 import com.moli.mall.mbg.mapper.PmsProductAttributeMapper;
 import com.moli.mall.mbg.model.PmsProductAttribute;
 import com.moli.mall.mbg.model.PmsProductAttributeExample;
@@ -22,6 +24,9 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
     @Resource
     private PmsProductAttributeMapper pmsProductAttributeMapper;
 
+    @Resource
+    private PmsProductAttributeDao pmsProductAttributeDao;
+
     @Override
     public List<PmsProductAttribute> getList(Long cid, Integer type, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -31,5 +36,10 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
                 .andProductAttributeCategoryIdEqualTo(cid)
                 .andTypeEqualTo(type);
         return pmsProductAttributeMapper.selectByExample(pmsProductAttributeExample);
+    }
+
+    @Override
+    public List<ProductAttrInfoVo> getProductAttrInfo(Long productCategoryId) {
+        return pmsProductAttributeDao.getProductAttrInfo(productCategoryId);
     }
 }

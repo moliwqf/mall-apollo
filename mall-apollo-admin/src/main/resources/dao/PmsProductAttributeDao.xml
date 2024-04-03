@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.admin.dao.PmsProductAttributeDao">
+    <resultMap id="pmsProductAttributeCategoryVoMap" type="com.moli.mall.admin.vo.PmsProductAttributeCategoryVo">
+        <result property="id" column="id" />
+        <result property="attributeCount" column="attribute_count" />
+        <result property="name" column="name" />
+        <result property="paramCount" column="param_count" />
+        <collection property="productAttributeList" ofType="com.moli.mall.mbg.model.PmsProductAttribute" >
+            <result property="id" column="product_attribute_id" />
+            <result property="name" column="product_attr_name" />
+            <result property="type" column="type" />
+            <result property="filterType" column="filter_type" />
+            <result property="handAddStatus" column="hand_add_status" />
+            <result property="inputList" column="input_list" />
+            <result property="inputType" column="input_type" />
+            <result property="productAttributeCategoryId" column="id" />
+            <result property="relatedStatus" column="related_status" />
+            <result property="searchType" column="search_type" />
+            <result property="selectType" column="select_type" />
+            <result property="sort" column="sort" />
+        </collection>
+    </resultMap>
+    <select id="getListWithAttr" resultMap="pmsProductAttributeCategoryVoMap">
+        select
+            ppac.id id,
+            ppac.attribute_count attribute_count,
+            ppac.name name,
+            ppac.param_count param_count,
+            ppa.id product_attribute_id,
+            ppa.name product_attr_name,
+            ppa.type type,
+            ppa.filter_type filter_type,
+            ppa.hand_add_status hand_add_status,
+            ppa.input_list input_list,
+            ppa.input_type input_type,
+            ppa.related_status related_status,
+            ppa.search_type search_type,
+            ppa.select_type select_type,
+            ppa.sort sort
+        from pms_product_attribute_category ppac
+            left join pms_product_attribute ppa on ppac.id = ppa.product_attribute_category_id
+        where ppa.type = 1
+        order by sort desc
+    </select>
+    <select id="getProductAttrInfo" resultType="com.moli.mall.admin.vo.ProductAttrInfoVo">
+        select
+        ppa.id attributeId,
+        ppa.product_attribute_category_id attributeCategoryId
+        from pms_product_category_attribute_relation ppcar
+        right join pms_product_category ppc on ppcar.product_category_id = ppc.id
+        left join pms_product_attribute ppa on ppcar.product_attribute_id = ppa.id
+        where ppcar.product_category_id = #{productCategoryId}
+    </select>
+</mapper>
