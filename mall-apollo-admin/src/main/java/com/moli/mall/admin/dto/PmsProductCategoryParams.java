@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author moli
  * @time 2024-04-03 15:52:35
- * @description TODO
+ * @description 商品分类参数
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
