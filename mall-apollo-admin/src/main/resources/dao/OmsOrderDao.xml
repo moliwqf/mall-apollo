@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.admin.dao.OmsOrderDao">
+    <update id="updateDeliveryList">
+        update oms_order set
+        delivery_sn = case id
+        <foreach collection="orderList" item="item" index="index">
+            when #{item.orderId} then #{item.deliverySn}
+        </foreach>
+        end,
+        delivery_company = case id
+        <foreach collection="orderList" item="item" index="index">
+            when #{item.orderId} then #{item.deliveryCompany}
+        </foreach>
+        end,
+        delivery_time = case id
+        <foreach collection="orderList" item="item" index="index">
+            when #{item.orderId} then now()
+        </foreach>
+        end,
+        status = case id
+        <foreach collection="orderList" item="item" index="index">
+            when #{item.orderId} then 2
+        </foreach>
+        end
+        where id in
+        <foreach collection="orderList" item="item" index="index" separator="," open="(" close=")">
+            #{item.orderId}
+        </foreach>
+        and status = 1
+    </update>
+</mapper>

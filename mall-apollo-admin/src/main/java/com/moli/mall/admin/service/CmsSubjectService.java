@@ -14,4 +14,9 @@ public interface CmsSubjectService {
      * 获取全部商品专题
      */
     List<CmsSubject> listAll();
+
+    /**
+     * 分页查询
+     */
+    List<CmsSubject> list(String keyword, Integer pageNum, Integer pageSize);
 }

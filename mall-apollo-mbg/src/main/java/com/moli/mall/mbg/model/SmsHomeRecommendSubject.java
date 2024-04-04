@@ -1,6 +1,7 @@
 package com.moli.mall.mbg.model;
 
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class SmsHomeRecommendSubject implements Serializable {

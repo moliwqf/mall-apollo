@@ -1,8 +1,7 @@
-package com.moli.mall.gateway.fileter;
+package com.moli.mall.gateway.filter;
 
 import com.moli.mall.common.constant.AuthConstant;
 import com.moli.mall.gateway.config.properties.IgnoreUrlsProperties;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;

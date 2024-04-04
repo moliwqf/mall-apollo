@@ -1,4 +1,4 @@
-package com.moli.mall.gateway.fileter;
+package com.moli.mall.gateway.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.moli.mall.common.constant.AuthConstant;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 

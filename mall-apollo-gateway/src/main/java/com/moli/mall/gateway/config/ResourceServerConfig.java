@@ -3,7 +3,7 @@ package com.moli.mall.gateway.config;
 import cn.hutool.core.util.ArrayUtil;
 import com.moli.mall.common.constant.AuthConstant;
 import com.moli.mall.gateway.config.properties.IgnoreUrlsProperties;
-import com.moli.mall.gateway.fileter.IgnoreUrlsFilter;
+import com.moli.mall.gateway.filter.IgnoreUrlsFilter;
 import com.moli.mall.gateway.handler.AccessDeniedHandler;
 import com.moli.mall.gateway.handler.AuthEntryPoint;
 import com.moli.mall.gateway.handler.AuthorizationManager;
@@ -19,6 +19,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
@@ -60,6 +63,7 @@ public class ResourceServerConfig {
             // 自定义认证失败处理器
             oAuth2.authenticationEntryPoint(authEntryPoint);
         });
+        DelegatingServerLogoutHandler logoutHandler = new DelegatingServerLogoutHandler(new SecurityContextServerLogoutHandler(), new WebSessionServerLogoutHandler());
         // 忽略白名单路径认证
         http.addFilterBefore(IgnoreUrlsFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         http.authorizeExchange()
@@ -69,7 +73,11 @@ public class ResourceServerConfig {
                 .and().exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler) // 配置访问拒绝策略
                 .authenticationEntryPoint(authEntryPoint) // 配置认证失败策略
-                .and().csrf().disable(); // 禁止csrf
+                .and().csrf().disable() // 禁止csrf
+                .logout(logout -> {
+                    logout.logoutHandler(logoutHandler);
+                    logout.logoutUrl("mall-admin/admin/logout");
+                });
         return http.build();
     }
 

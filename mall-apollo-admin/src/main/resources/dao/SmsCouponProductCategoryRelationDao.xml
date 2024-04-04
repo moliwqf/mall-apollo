@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.admin.dao.SmsCouponProductCategoryRelationDao">
+
+    <insert id="insertList">
+        insert into sms_coupon_product_category_relation (coupon_id, product_category_id, product_category_name, parent_category_name)
+        values
+        <foreach collection="productCategoryRelationList" item="item" separator=",">
+            (
+            #{item.couponId},
+            #{item.productCategoryId},
+            #{item.productCategoryName},
+            #{item.parentCategoryName}
+            )
+        </foreach>
+    </insert>
+</mapper>

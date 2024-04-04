@@ -1,5 +1,7 @@
 package com.moli.mall.admin.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.github.pagehelper.PageHelper;
 import com.moli.mall.admin.service.CmsSubjectService;
 import com.moli.mall.mbg.mapper.CmsSubjectMapper;
 import com.moli.mall.mbg.model.CmsSubject;
@@ -23,5 +25,15 @@ public class CmsSubjectServiceImpl implements CmsSubjectService {
     @Override
     public List<CmsSubject> listAll() {
         return cmsSubjectMapper.selectByExample(new CmsSubjectExample());
+    }
+
+    @Override
+    public List<CmsSubject> list(String keyword, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        CmsSubjectExample cmsSubjectExample = new CmsSubjectExample();
+        if (StrUtil.isNotEmpty(keyword)) {
+            cmsSubjectExample.createCriteria().andTitleLike("%" + keyword + "%");
+        }
+        return cmsSubjectMapper.selectByExample(cmsSubjectExample);
     }
 }
