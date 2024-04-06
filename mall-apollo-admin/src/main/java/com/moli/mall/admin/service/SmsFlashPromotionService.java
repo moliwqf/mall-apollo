@@ -1,5 +1,6 @@
 package com.moli.mall.admin.service;
 
+import com.moli.mall.admin.vo.HomeFlashPromotionVo;
 import com.moli.mall.mbg.model.SmsFlashPromotion;
 
 import java.util.List;
@@ -39,4 +40,9 @@ public interface SmsFlashPromotionService {
      * 创建新秒杀活动
      */
     int create(SmsFlashPromotion flashPromotion);
+
+    /**
+     * 获取当前秒杀场次信息
+     */
+    HomeFlashPromotionVo getCurrentFlashPromotion();
 }

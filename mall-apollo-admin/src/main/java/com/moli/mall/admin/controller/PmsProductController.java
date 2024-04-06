@@ -4,6 +4,7 @@ import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.dto.PmsProductParams;
 import com.moli.mall.admin.dto.PmsProductQueryParams;
 import com.moli.mall.admin.service.PmsProductService;
+import com.moli.mall.admin.vo.PmsPortalProductDetailVo;
 import com.moli.mall.admin.vo.PmsProductResultVo;
 import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
@@ -27,6 +28,23 @@ public class PmsProductController {
 
     @Resource
     private PmsProductService pmsProductService;
+
+    @ApiOperation("获取前台商品详情")
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public CommonResult<PmsPortalProductDetailVo> detail(@RequestParam("productId") Long productId) {
+        PmsPortalProductDetailVo productDetail = pmsProductService.detail(productId);
+        return CommonResult.success(productDetail);
+    }
+
+    @ApiOperation("综合搜索商品")
+    @GetMapping("/search")
+    public CommonPage<PmsProduct> search(@RequestParam(value = "keyword", required = false) String keyword,
+                                   @RequestParam(value = "brandId", required = false) Long brandId,
+                                   @RequestParam(value = "productCategoryId", required = false) Long productCategoryId,
+                                   @RequestParam(value = "sort", required = false) Integer sort) {
+        List<PmsProduct> productList = pmsProductService.search(keyword, brandId, productCategoryId, sort, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonPage.restPage(productList);
+    }
 
     @ApiOperation("根据商品名称或货号模糊查询")
     @GetMapping("/simpleList")
@@ -109,7 +127,6 @@ public class PmsProductController {
 
     @ApiOperation("更新商品")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseBody
     public CommonResult<?> update(@PathVariable Long id, @RequestBody PmsProductParams productParam) {
         int count = pmsProductService.update(id, productParam);
         if (count > 0) {
@@ -121,7 +138,6 @@ public class PmsProductController {
 
     @ApiOperation("根据商品id获取商品编辑信息")
     @GetMapping("/updateInfo/{id}")
-    @ResponseBody
     public CommonResult<PmsProductResultVo> getUpdateInfo(@PathVariable Long id) {
         PmsProductResultVo productResult = pmsProductService.getUpdateInfo(id);
         return CommonResult.success(productResult);
@@ -131,6 +147,13 @@ public class PmsProductController {
     @GetMapping("/list")
     public CommonResult<CommonPage<PmsProduct>> getList(PmsProductQueryParams productQueryParam) {
         List<PmsProduct> productList = pmsProductService.list(productQueryParam, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(CommonPage.restPage(productList));
+    }
+
+    @ApiOperation("分页获取推荐商品")
+    @GetMapping("/recommend/list")
+    public CommonResult<CommonPage<PmsProduct>> recommendProductList() {
+        List<PmsProduct> productList = pmsProductService.recommendProductList(PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
         return CommonResult.success(CommonPage.restPage(productList));
     }
 }

@@ -84,4 +84,11 @@ public class OmsOrderController {
         List<OmsOrder> orderList = omsOrderService.list(PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize(), queryParam);
         return CommonResult.success(CommonPage.restPage(orderList));
     }
+
+    @ApiOperation("查询订单包括订单详情信息")
+    @PostMapping("/detail/list")
+    public CommonResult<CommonPage<OmsOrderDetailVo>> detailList(@RequestBody OmsOrderQueryParams queryParam) {
+        List<OmsOrderDetailVo> orderList = omsOrderService.detailList(PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize(), queryParam);
+        return CommonResult.success(CommonPage.restPage(orderList));
+    }
 }

@@ -1,5 +1,6 @@
 package com.moli.mall.admin.service;
 
+import com.moli.mall.mbg.model.CmsSubject;
 import com.moli.mall.mbg.model.SmsHomeRecommendSubject;
 
 import java.util.List;
@@ -34,4 +35,9 @@ public interface SmsHomeRecommendSubjectService {
      * 批量添加
      */
     int create(List<SmsHomeRecommendSubject> homeBrandList);
+
+    /**
+     * 分页查询推荐专题
+     */
+    List<CmsSubject> appList(String subjectName, Integer pageNum, Integer pageSize);
 }

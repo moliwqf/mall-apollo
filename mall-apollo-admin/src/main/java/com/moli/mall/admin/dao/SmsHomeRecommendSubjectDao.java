@@ -1,5 +1,6 @@
 package com.moli.mall.admin.dao;
 
+import com.moli.mall.mbg.model.CmsSubject;
 import com.moli.mall.mbg.model.SmsHomeRecommendSubject;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,9 @@ public interface SmsHomeRecommendSubjectDao {
      * 批量添加
      */
     int insertList(@Param("homeBrandList") List<SmsHomeRecommendSubject> homeBrandList);
+
+    /**
+     * 分页查询推荐专题
+     */
+    List<CmsSubject> appList(@Param("subjectName") String subjectName, @Param("page") Integer page, @Param("pageSize") Integer pageSize);
 }

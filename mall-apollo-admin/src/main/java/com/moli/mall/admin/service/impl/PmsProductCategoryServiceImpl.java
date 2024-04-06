@@ -168,6 +168,16 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         return 0;
     }
 
+    @Override
+    public List<PmsProductCategory> getAll(Long parentId) {
+        PmsProductCategoryExample pmsProductCategoryExample = new PmsProductCategoryExample();
+        pmsProductCategoryExample.createCriteria()
+                .andParentIdEqualTo(parentId)
+                .andShowStatusEqualTo(1);
+        pmsProductCategoryExample.setOrderByClause("sort desc");
+        return pmsProductCategoryMapper.selectByExample(pmsProductCategoryExample);
+    }
+
     /**
      * 设置分类级别
      */

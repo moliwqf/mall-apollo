@@ -2,6 +2,7 @@ package com.moli.mall.auth.service.impl;
 
 import com.moli.mall.auth.service.UmsAdminService;
 import com.moli.mall.auth.domain.SecurityUser;
+import com.moli.mall.auth.service.UmsMemberService;
 import com.moli.mall.common.constant.AuthConstant;
 import com.moli.mall.common.constant.MessageConstant;
 import com.moli.mall.common.dto.UserDto;
@@ -34,6 +35,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Resource
     private HttpServletRequest request;
 
+    @Resource
+    private UmsMemberService umsMemberService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String clientId = request.getParameter(AuthConstant.CLIENT_ID_PARAM);
@@ -41,6 +45,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         UserDto userDto = null;
         if (AuthConstant.ADMIN_CLIENT_ID.equals(clientId)) {
             userDto = umsAdminService.loadUserByUsername(username);
+        } else if (AuthConstant.PORTAL_CLIENT_ID.equals(clientId)) {
+            userDto = umsMemberService.loadUserByUsername(username);
         }
         if (Objects.isNull(userDto)) throw new RuntimeException(MessageConstant.USERNAME_PASSWORD_ERROR);
         userDto.setClientId(clientId);

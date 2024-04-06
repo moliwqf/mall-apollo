@@ -47,4 +47,9 @@ public interface OmsOrderService {
      * @param note 备注信息
      */
     int close(List<Long> ids, String note);
+
+    /**
+     * 分页查询
+     */
+    List<OmsOrderDetailVo> detailList(Integer pageNum, Integer pageSize, OmsOrderQueryParams queryParam);
 }

@@ -82,4 +82,11 @@ public class PmsProductCategoryController {
         List<PmsProductCategoryWithChildrenVo> list = pmsProductCategoryService.listWithChildren();
         return CommonResult.success(list);
     }
+
+    @ApiOperation("查询所有的分类")
+    @GetMapping("/all/{parentId}")
+    public CommonResult<List<PmsProductCategory>> getListByParentId(@PathVariable Long parentId) {
+        List<PmsProductCategory> productCategoryList = pmsProductCategoryService.getAll(parentId);
+        return CommonResult.success(productCategoryList);
+    }
 }

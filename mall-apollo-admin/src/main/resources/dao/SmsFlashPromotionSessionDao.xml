@@ -10,20 +10,30 @@
         <result property="createTime" column="create_time" />
         <result property="productCount" column="product_count" />
     </resultMap>
-    <select id="seleList" resultMap="SmsFlashPromotionSessionVo">
+    <select id="selectCurrentSession" resultType="com.moli.mall.mbg.model.SmsFlashPromotionSession">
         select
-            sfps.id id,
-            sfps.name name,
-            sfps.start_time start_time,
-            sfps.end_time end_time,
-            sfps.status status,
-            sfps.create_time create_time,
-            count(sfps.id) product_count
+        sfps.id id,
+        sfps.name name,
+        sfps.start_time startTime,
+        sfps.end_time endTime,
+        sfps.status status,
+        sfps.create_time createTime
         from sms_flash_promotion_session sfps
-            left join sms_flash_promotion_product_relation sfppr on sfps.id = sfppr.flash_promotion_session_id
-            left join sms_flash_promotion sfp on sfppr.flash_promotion_id = sfp.id
-        where sfp.id = #{flashPromotionId} and sfps.status = 1
-        group by sfps.id
-        order by start_time asc, end_time asc, create_time desc, product_count desc
+        where sfps.start_time >= #{date} and sfps.end_time &lt;= #{date}
+        order by sfps.start_time
+        limit 0, 1
+    </select>
+    <select id="selectNextSession" resultType="com.moli.mall.mbg.model.SmsFlashPromotionSession">
+        select
+        sfps.id id,
+        sfps.name name,
+        sfps.start_time startTime,
+        sfps.end_time endTime,
+        sfps.status status,
+        sfps.create_time createTime
+        from sms_flash_promotion_session sfps
+        where sfps.start_time > #{date}
+        order by sfps.start_time
+        limit 0, 1
     </select>
 </mapper>

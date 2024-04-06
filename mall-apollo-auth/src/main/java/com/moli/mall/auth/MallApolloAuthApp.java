@@ -14,6 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @SpringBootApplication
 public class MallApolloAuthApp {
+
     public static void main(String[] args) {
         SpringApplication.run(MallApolloAuthApp.class, args);
     }

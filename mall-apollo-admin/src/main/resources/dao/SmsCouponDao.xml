@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.admin.dao.SmsCouponDao">
+    <select id="getAvailableCouponList" resultMap="com.moli.mall.mbg.mapper.SmsCouponMapper.BaseResultMap">
+        select *
+        from sms_coupon
+        where use_type = 0
+        and start_time &lt; now()
+        and end_time > now()
+        union
+        (
+            select sc.*
+            from sms_coupon_product_category_relation scpcr
+            left join sms_coupon sc on scpcr.coupon_id = sc.id
+            where sc.use_type = 1
+            and sc.start_time &lt; now()
+            and sc.end_time > now()
+            and scpcr.product_category_id = #{productCategoryId}
+        )
+        union
+        (
+            select sc.*
+            from sms_coupon_product_relation scpr
+            left join sms_coupon sc on scpr.coupon_id = sc.id
+            where sc.use_type = 2
+            and sc.start_time &lt; now()
+            and sc.end_time > now()
+            and scpr.product_id = #{productId}
+        )
+    </select>
+</mapper>

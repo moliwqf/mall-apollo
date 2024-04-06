@@ -58,14 +58,21 @@ public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        // 后台管理
         clients.inMemory() // 使用memory
                 .withClient(AuthConstant.ADMIN_CLIENT_ID)
                 .secret(passwordEncoder.encode(AuthConstant.CLIENT_SECRETE_KEY)) // 配置密钥
                 .scopes("all")
                 .authorizedGrantTypes(AuthConstant.PASSWORD_GRANT_TYPE, AuthConstant.REFRESH_TOKEN_GRANT_TYPE)
                 .accessTokenValiditySeconds(AuthConstant.ACCESS_TOKEN_VALIDITY_SECONDS)
-                .refreshTokenValiditySeconds(AuthConstant.REFRESH_TOKEN_VALIDITY_SECONDS); // 配置后台应用
-        // TODO 配置前台应用
+                .refreshTokenValiditySeconds(AuthConstant.REFRESH_TOKEN_VALIDITY_SECONDS) // 配置后台应用
+                .and()
+                .withClient(AuthConstant.PORTAL_CLIENT_ID)
+                .secret(passwordEncoder.encode(AuthConstant.CLIENT_SECRETE_KEY)) // 配置密钥
+                .scopes("all")
+                .authorizedGrantTypes(AuthConstant.PASSWORD_GRANT_TYPE, AuthConstant.REFRESH_TOKEN_GRANT_TYPE)
+                .accessTokenValiditySeconds(AuthConstant.ACCESS_TOKEN_VALIDITY_SECONDS)
+                .refreshTokenValiditySeconds(AuthConstant.REFRESH_TOKEN_VALIDITY_SECONDS); // 配置前台应用
     }
 
     /**

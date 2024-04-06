@@ -78,6 +78,11 @@ public interface AuthConstant {
     String ADMIN_CLIENT_ID = "mall-apollo-admin-app";
 
     /**
+     * 前台管理client_id
+     */
+    String PORTAL_CLIENT_ID = "mall-apollo-portal-app";
+
+    /**
      * client_secret 密钥
      */
     String CLIENT_SECRETE_KEY = "mall-apollo-pass";

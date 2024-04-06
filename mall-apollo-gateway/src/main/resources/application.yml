@@ -11,6 +11,12 @@ spring:
           enabled: true # 设置为true启用服务发现定位器
           lower-case-service-id: true # 开启小写模式
       routes:
+        - id: mall-portal
+          uri: lb://mall-portal
+          predicates:
+            - Path=/mall-portal/**
+          filters:
+            - StripPrefix=1
         - id: mall-admin
           uri: lb://mall-admin
           predicates:
@@ -37,6 +43,8 @@ secure:
   ignore:
     urls: #配置白名单路径
       - "/doc.html"
+      - "/mall-portal/sso/login"
+      - "/mall-portal/home/**"
       - "/mall-auth/rsa/publicKey"
       - "/mall-admin/admin/login"
       - "/mall-admin/admin/register"

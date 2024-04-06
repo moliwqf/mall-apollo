@@ -14,4 +14,28 @@
             )
         </foreach>
     </insert>
+    <select id="hotList" resultType="com.moli.mall.mbg.model.PmsProduct">
+        select
+        pp.*
+        from sms_home_new_product shnp
+        left join pms_product pp on shnp.product_id = pp.id
+        where shnp.recommend_status = 1 and pp.delete_status = 0 and pp.publish_status = 1
+        <if test="productName != null and productName.length() > 0">
+            shnp.product_name like concat('%', #{productName}, '%')
+        </if>
+        order by shnp.sort desc
+        limit #{page}, #{pageSize}
+    </select>
+    <select id="appList" resultType="com.moli.mall.mbg.model.PmsProduct">
+        select
+        pp.*
+        from sms_home_new_product shnp
+        left join pms_product pp on shnp.product_id = pp.id
+        where shnp.recommend_status = 1 and pp.delete_status = 0 and pp.publish_status = 1
+        <if test="productName != null and productName.length() > 0">
+            shnp.product_name like concat('%', #{productName}, '%')
+        </if>
+        order by shnp.sort desc
+        limit #{page}, #{pageSize}
+    </select>
 </mapper>

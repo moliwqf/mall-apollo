@@ -1,10 +1,12 @@
 package com.moli.mall.admin.dao;
 
-import com.moli.mall.admin.vo.SmsFlashPromotionSessionVo;
+import com.moli.mall.mbg.model.SmsFlashPromotionSession;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
+
 
 /**
  * @author moli
@@ -14,7 +16,14 @@ import java.util.List;
 @Repository
 public interface SmsFlashPromotionSessionDao {
     /**
-     * 获取全部可选场次及其数量
+     * 查询目标时间的场次
+     * @param date 目标时间
      */
-    List<SmsFlashPromotionSessionVo> seleList(@Param("flashPromotionId") Long flashPromotionId);
+    List<SmsFlashPromotionSession> selectCurrentSession(@Param("date") Date date);
+
+    /**
+     * 查询大于开始时间date时间的第一个场次
+     * @param date 目标时间
+     */
+    List<SmsFlashPromotionSession> selectNextSession(@Param("date") Date date);
 }

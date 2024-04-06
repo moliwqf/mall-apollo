@@ -1,5 +1,6 @@
 package com.moli.mall.admin.controller;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.service.CmsSubjectService;
 import com.moli.mall.common.domain.CommonPage;
@@ -24,6 +25,13 @@ public class CmsSubjectController {
 
     @Resource
     private CmsSubjectService cmsSubjectService;
+
+    @ApiOperation("根据分类获取专题")
+    @RequestMapping(value = "/subjectList", method = RequestMethod.GET)
+    public CommonResult<CommonPage<CmsSubject>> getSubjectList(@RequestParam(required = false) Long cateId) {
+        List<CmsSubject> subjectList = cmsSubjectService.getSubjectList(cateId, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(CommonPage.restPage(subjectList));
+    }
 
     @ApiOperation(value = "根据专题名称分页获取专题")
     @GetMapping("/list")

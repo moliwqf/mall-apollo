@@ -30,4 +30,7 @@ public class OmsOrderQueryParams {
 
     @ApiModelProperty(value = "订单提交时间")
     private String createTime;
+
+    @ApiModelProperty(value = "会员id")
+    private Long memberId;
 }

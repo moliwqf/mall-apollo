@@ -14,4 +14,24 @@
             )
         </foreach>
     </insert>
+    <select id="appList" resultType="com.moli.mall.mbg.model.PmsBrand">
+        select
+        pb.id id,
+        pb.name name,
+        pb.first_letter first_letter,
+        pb.factory_status factory_status,
+        pb.show_status show_status,
+        pb.product_count product_count,
+        pb.product_comment_count product_comment_count,
+        pb.logo logo,
+        pb.big_pic big_pic,
+        pb.brand_story brand_story
+        from sms_home_brand shb
+        left join pms_brand pb on shb.brand_id = pb.id
+        where pb.show_status = #{showStatus}
+        <if test="brandName != null and brandName.length() > 0">
+            shb.brand_name like concat('%', #{brandName}, '%')
+        </if>
+        order by shb.sort desc
+    </select>
 </mapper>

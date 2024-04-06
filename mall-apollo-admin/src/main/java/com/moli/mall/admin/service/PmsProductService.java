@@ -2,6 +2,7 @@ package com.moli.mall.admin.service;
 
 import com.moli.mall.admin.dto.PmsProductParams;
 import com.moli.mall.admin.dto.PmsProductQueryParams;
+import com.moli.mall.admin.vo.PmsPortalProductDetailVo;
 import com.moli.mall.admin.vo.PmsProductResultVo;
 import com.moli.mall.mbg.model.PmsProduct;
 
@@ -74,4 +75,20 @@ public interface PmsProductService {
      * @param keyword 商品名称或货号
      */
     List<PmsProduct> list(String keyword);
+
+    /**
+     * 分页获取推荐商品
+     */
+    List<PmsProduct> recommendProductList(Integer pageNum, Integer pageSize);
+
+    /**
+     * 综合搜索商品
+     * @param sort 1->按新品；2->按销量；3->价格从低到高；4->价格从高到低
+     */
+    List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer sort, Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取前台商品详情
+     */
+    PmsPortalProductDetailVo detail(Long productId);
 }

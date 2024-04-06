@@ -14,4 +14,15 @@
             )
         </foreach>
     </insert>
+    <select id="appList" resultType="com.moli.mall.mbg.model.CmsSubject">
+        select
+        cs.*
+        from sms_home_recommend_subject shrs
+        left join cms_subject cs on shrs.subject_id = cs.id
+        where cs.show_status = 1 and shrs.recommend_status = 1
+        <if test="subjectName != null and subjectName.length() > 0">
+            shrs.subject_name like concat('%', #{subjectName}, '%')
+        </if>
+        order by shrs.sort
+    </select>
 </mapper>

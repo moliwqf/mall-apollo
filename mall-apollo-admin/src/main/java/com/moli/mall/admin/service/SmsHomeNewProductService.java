@@ -1,5 +1,6 @@
 package com.moli.mall.admin.service;
 
+import com.moli.mall.mbg.model.PmsProduct;
 import com.moli.mall.mbg.model.SmsHomeNewProduct;
 
 import java.util.List;
@@ -34,4 +35,14 @@ public interface SmsHomeNewProductService {
      * 批量创建
      */
     int create(List<SmsHomeNewProduct> homeBrandList);
+
+    /**
+     * 分页查询人气推荐 app
+     */
+    List<PmsProduct> hotList(String productName, Integer pageNum, Integer pageSize);
+
+    /**
+     * 分页查询新品推荐
+     */
+    List<PmsProduct> appList(String productName, Integer pageNum, Integer pageSize);
 }

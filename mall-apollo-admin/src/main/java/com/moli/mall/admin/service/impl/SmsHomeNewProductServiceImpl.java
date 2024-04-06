@@ -4,7 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.moli.mall.admin.dao.SmsHomeNewProductDao;
 import com.moli.mall.admin.service.SmsHomeNewProductService;
+import com.moli.mall.mbg.mapper.PmsProductMapper;
 import com.moli.mall.mbg.mapper.SmsHomeNewProductMapper;
+import com.moli.mall.mbg.model.PmsProduct;
 import com.moli.mall.mbg.model.SmsHomeNewProduct;
 import com.moli.mall.mbg.model.SmsHomeNewProductExample;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,5 +94,17 @@ public class SmsHomeNewProductServiceImpl implements SmsHomeNewProductService {
             }
         }
         return smsHomeNewProductDao.insertList(homeBrandList);
+    }
+
+    @Override
+    public List<PmsProduct> hotList(String productName, Integer pageNum, Integer pageSize) {
+        int page = (pageNum - 1) * pageSize;
+        return smsHomeNewProductDao.hotList(productName, page, pageSize);
+    }
+
+    @Override
+    public List<PmsProduct> appList(String productName, Integer pageNum, Integer pageSize) {
+        int page = (pageNum - 1) * pageSize;
+        return smsHomeNewProductDao.appList(productName, page, pageSize);
     }
 }

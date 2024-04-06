@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moli.mall.portal.dao.SmsCouponHistoryDao">
+    <select id="listHistories" resultType="com.moli.mall.mbg.model.SmsCoupon">
+        select
+        sc.id id,
+        sc.type type,
+        sc.name name,
+        sc.platform platform,
+        sc.count count,
+        sc.amount amount,
+        sc.per_limit perLimit,
+        sc.min_point minPoint,
+        sc.start_time startTime,
+        sc.end_time endTime,
+        sc.use_type useType,
+        sc.note note,
+        sc.publish_count publishCount,
+        sc.use_count useCount,
+        sc.receive_count receiveCount,
+        sc.enable_time enableTime,
+        sc.code code,
+        sc.member_level memberLevel
+        from sms_coupon_history sch
+        left join sms_coupon sc on sch.coupon_id = sc.id
+        where sch.member_id = #{memberId} and sch.use_status = #{useStatus}
+    </select>
+</mapper>

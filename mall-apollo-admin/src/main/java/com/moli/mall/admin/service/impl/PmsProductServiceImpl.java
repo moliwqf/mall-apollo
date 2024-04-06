@@ -1,11 +1,13 @@
 package com.moli.mall.admin.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.moli.mall.admin.dao.*;
 import com.moli.mall.admin.dto.PmsProductParams;
 import com.moli.mall.admin.dto.PmsProductQueryParams;
 import com.moli.mall.admin.service.PmsProductService;
+import com.moli.mall.admin.vo.PmsPortalProductDetailVo;
 import com.moli.mall.admin.vo.PmsProductResultVo;
 import com.moli.mall.common.utils.AssetsUtil;
 import com.moli.mall.common.utils.BeanCopyUtil;
@@ -18,11 +20,13 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.sql.JDBCType;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * @author moli
@@ -80,6 +84,15 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Resource
     private CmsPrefrenceAreaProductRelationDao cmsPrefrenceAreaProductRelationDao;
 
+    @Resource
+    private PmsBrandMapper pmsBrandMapper;
+
+    @Resource
+    private PmsProductAttributeMapper pmsProductAttributeMapper;
+
+    @Resource
+    private SmsCouponMapper smsCouponMapper;
+
     @Override
     public List<PmsProduct> list(PmsProductQueryParams productQueryParam, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -104,7 +117,6 @@ public class PmsProductServiceImpl implements PmsProductService {
             pmsProductLadderExample.createCriteria().andProductIdEqualTo(id);
             return pmsProductLadderMapper.selectByExample(pmsProductLadderExample);
         }).whenComplete((pmsProductLadders, e) -> productResultVo.setProductLadderList(pmsProductLadders));
-
 
         // 查询商品满减价格信息
         CompletableFuture<List<PmsProductFullReduction>> reductionsFuture = CompletableFuture.supplyAsync(() -> {
@@ -507,6 +519,130 @@ public class PmsProductServiceImpl implements PmsProductService {
             pmsProductExample.or().andDeleteStatusEqualTo(0).andProductSnLike(query);
         }
         return pmsProductMapper.selectByExample(pmsProductExample);
+    }
+
+    @Override
+    public List<PmsProduct> recommendProductList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PmsProductExample pmsProductExample = new PmsProductExample();
+        pmsProductExample.createCriteria()
+                .andRecommandStatusEqualTo(1)
+                .andDeleteStatusEqualTo(0)
+                .andPublishStatusEqualTo(1);
+        return pmsProductMapper.selectByExample(pmsProductExample);
+    }
+
+    @Override
+    public List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer sort, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PmsProductExample pmsProductExample = new PmsProductExample();
+        PmsProductExample.Criteria criteria = pmsProductExample.createCriteria();
+
+        if (StrUtil.isNotEmpty(keyword)) {
+            criteria.andNameLike("%" + keyword + "%");
+        }
+
+        if (Objects.nonNull(brandId)) {
+            criteria.andBrandIdEqualTo(brandId);
+        }
+
+        if (Objects.nonNull(productCategoryId)) {
+            criteria.andProductCategoryIdEqualTo(productCategoryId);
+        }
+
+        switch (sort) {
+            case 1:
+                pmsProductExample.setOrderByClause("id desc");
+                break;
+            case 2:
+                pmsProductExample.setOrderByClause("sale desc");
+                break;
+            case 3:
+                pmsProductExample.setOrderByClause("price asc");
+                break;
+            case 4:
+                pmsProductExample.setOrderByClause("price desc");
+                break;
+        }
+
+        return pmsProductMapper.selectByExample(pmsProductExample);
+    }
+
+    @Resource
+    private SmsCouponDao smsCouponDao;
+
+    @Override
+    public PmsPortalProductDetailVo detail(Long productId) {
+        // 获取商品基础信息
+        PmsProduct rawProduct = pmsProductMapper.selectByPrimaryKey(productId);
+        if (Objects.isNull(rawProduct)) return null;
+        PmsPortalProductDetailVo result = new PmsPortalProductDetailVo();
+        result.setProduct(rawProduct);
+
+        try {
+            // 获取商品品牌
+            CompletableFuture<PmsBrand> brandFuture = CompletableFuture.supplyAsync(() -> pmsBrandMapper.selectByPrimaryKey(rawProduct.getBrandId()))
+                    .whenComplete((brand, e) -> result.setBrand(brand));
+
+            // 获取商品属性与参数
+            CompletableFuture<List<PmsProductAttributeValue>> attrListFuture = CompletableFuture.supplyAsync(() -> {
+                        PmsProductAttributeExample pmsProductAttributeExample = new PmsProductAttributeExample();
+                        pmsProductAttributeExample.createCriteria().andProductAttributeCategoryIdEqualTo(rawProduct.getProductAttributeCategoryId());
+                        return pmsProductAttributeMapper.selectByExample(pmsProductAttributeExample);
+                    }).whenComplete((productAttributeList, e) -> result.setProductAttributeList(productAttributeList))
+                    .thenApply((productAttributeList) -> {
+                        // 获取手动录入的商品属性与参数值
+                        if (CollUtil.isNotEmpty(productAttributeList)) {
+                            List<Long> attrIds = productAttributeList.stream().map(PmsProductAttribute::getId).collect(Collectors.toList());
+                            PmsProductAttributeValueExample pmsProductAttributeValueExample = new PmsProductAttributeValueExample();
+                            pmsProductAttributeValueExample.createCriteria().andProductIdEqualTo(productId).andProductAttributeIdIn(attrIds);
+                            return pmsProductAttributeValueMapper.selectByExample(pmsProductAttributeValueExample);
+                        }
+                        return new ArrayList<PmsProductAttributeValue>();
+                    }).whenComplete((valueList, e) -> result.setProductAttributeValueList(valueList));
+
+            // 获取商品的sku库存信息
+            CompletableFuture<List<PmsSkuStock>> skuFuture = CompletableFuture.supplyAsync(() -> {
+                PmsSkuStockExample pmsSkuStockExample = new PmsSkuStockExample();
+                pmsSkuStockExample.createCriteria().andProductIdEqualTo(productId);
+                return pmsSkuStockMapper.selectByExample(pmsSkuStockExample);
+            }).whenComplete((skuStockList, e) -> result.setSkuStockList(skuStockList));
+
+            // 获取商品阶梯价格设置
+            if (rawProduct.getPromotionType() == 3) {
+                CompletableFuture.supplyAsync(() -> {
+                            PmsProductLadderExample pmsProductLadderExample = new PmsProductLadderExample();
+                            pmsProductLadderExample.createCriteria().andProductIdEqualTo(productId);
+                            return pmsProductLadderMapper.selectByExample(pmsProductLadderExample);
+                        }).whenComplete((productLadderList, e) -> result.setProductLadderList(productLadderList))
+                        .get();
+            }
+
+            if (rawProduct.getPromotionType() == 4) {
+                // 获取商品满减价格设置
+                CompletableFuture.supplyAsync(() -> {
+                            PmsProductFullReductionExample pmsProductFullReductionExample = new PmsProductFullReductionExample();
+                            pmsProductFullReductionExample.createCriteria().andProductIdEqualTo(productId);
+                            return pmsProductFullReductionMapper.selectByExample(pmsProductFullReductionExample);
+                        }).whenComplete((productFullReductionList, e) -> result.setProductFullReductionList(productFullReductionList))
+                        .get();
+            }
+
+            // 获取商品可用优惠券
+            CompletableFuture<List<SmsCoupon>> couponListFuture = CompletableFuture.supplyAsync(
+                    () -> smsCouponDao.getAvailableCouponList(productId, rawProduct.getProductCategoryId())
+            ).whenComplete((couponList, e) -> result.setCouponList(couponList));
+
+            CompletableFuture.allOf(
+                    brandFuture,
+                    attrListFuture,
+                    skuFuture,
+                    couponListFuture
+            ).get();
+        } catch (InterruptedException | ExecutionException e) {
+            AssetsUtil.fail("获取商品详情失败");
+        }
+        return result;
     }
 
     /**

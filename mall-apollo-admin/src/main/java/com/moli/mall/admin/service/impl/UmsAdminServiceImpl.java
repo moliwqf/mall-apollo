@@ -107,6 +107,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
+    @Transactional
     public UmsAdmin register(UmsAdminParams umsAdminParams) {
         UmsAdmin umsAdmin = BeanCopyUtil.copyBean(umsAdminParams, UmsAdmin.class);
         assert umsAdmin != null;

@@ -45,4 +45,9 @@ public interface PmsProductCategoryService {
      * 删除商品分类
      */
     int delete(Long id);
+
+    /**
+     * 查询所有的分类
+     */
+    List<PmsProductCategory> getAll(Long parentId);
 }

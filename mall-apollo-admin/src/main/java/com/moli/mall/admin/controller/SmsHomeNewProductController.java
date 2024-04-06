@@ -4,6 +4,7 @@ import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.service.SmsHomeNewProductService;
 import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
+import com.moli.mall.mbg.model.PmsProduct;
 import com.moli.mall.mbg.model.SmsHomeNewProduct;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -70,7 +71,21 @@ public class SmsHomeNewProductController {
     @GetMapping(value = "/list")
     public CommonResult<CommonPage<SmsHomeNewProduct>> list(@RequestParam(value = "productName", required = false) String productName,
                                                             @RequestParam(value = "recommendStatus", required = false) Integer recommendStatus) {
-        List<SmsHomeNewProduct> homeBrandList = smsHomeNewProductService.list(productName, recommendStatus, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
-        return CommonResult.success(CommonPage.restPage(homeBrandList));
+        List<SmsHomeNewProduct> homeNewProducts = smsHomeNewProductService.list(productName, recommendStatus, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(CommonPage.restPage(homeNewProducts));
+    }
+
+    @ApiOperation("分页查询新品推荐商品")
+    @GetMapping(value = "/app/list")
+    public CommonResult<List<PmsProduct>> appList(@RequestParam(value = "productName", required = false) String productName) {
+        List<PmsProduct> homeProductList = smsHomeNewProductService.appList(productName, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(homeProductList);
+    }
+
+    @ApiOperation("分页查询人气推荐商品")
+    @GetMapping(value = "/hotList")
+    public CommonResult<List<PmsProduct>> hotList(@RequestParam(value = "productName", required = false) String productName) {
+        List<PmsProduct> homeProductList = smsHomeNewProductService.hotList(productName, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(homeProductList);
     }
 }

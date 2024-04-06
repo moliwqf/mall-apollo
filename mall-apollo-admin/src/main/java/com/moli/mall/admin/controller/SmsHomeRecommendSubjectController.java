@@ -4,6 +4,7 @@ import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.service.SmsHomeRecommendSubjectService;
 import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
+import com.moli.mall.mbg.model.CmsSubject;
 import com.moli.mall.mbg.model.SmsHomeRecommendSubject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -70,7 +71,14 @@ public class SmsHomeRecommendSubjectController {
     @GetMapping("/list")
     public CommonResult<CommonPage<SmsHomeRecommendSubject>> list(@RequestParam(value = "subjectName", required = false) String subjectName,
                                                                   @RequestParam(value = "recommendStatus", required = false) Integer recommendStatus) {
-        List<SmsHomeRecommendSubject> homeBrandList = smsHomeRecommendSubjectService.list(subjectName, recommendStatus, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
-        return CommonResult.success(CommonPage.restPage(homeBrandList));
+        List<SmsHomeRecommendSubject> homeRecommendSubjects = smsHomeRecommendSubjectService.list(subjectName, recommendStatus, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(CommonPage.restPage(homeRecommendSubjects));
+    }
+
+    @ApiOperation("分页查询推荐专题")
+    @GetMapping("/app/list")
+    public CommonResult<List<CmsSubject>> appList(@RequestParam(value = "subjectName", required = false) String subjectName) {
+        List<CmsSubject> homeRecommendSubjects = smsHomeRecommendSubjectService.appList(subjectName, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(homeRecommendSubjects);
     }
 }

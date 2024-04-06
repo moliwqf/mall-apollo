@@ -10,7 +10,6 @@ import com.moli.mall.admin.dto.OmsOrderDeliveryParams;
 import com.moli.mall.admin.dto.OmsOrderQueryParams;
 import com.moli.mall.admin.service.OmsOrderService;
 import com.moli.mall.admin.vo.OmsOrderDetailVo;
-import com.moli.mall.common.constant.CommonStatus;
 import com.moli.mall.common.utils.AssetsUtil;
 import com.moli.mall.common.utils.BeanCopyUtil;
 import com.moli.mall.mbg.mapper.OmsOrderItemMapper;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -69,8 +69,16 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         if (Objects.isNull(rawOrder)) {
             return null;
         }
+        return detail(rawOrder);
+    }
+
+    /**
+     * 根据基础信息获取详情
+     */
+    private OmsOrderDetailVo detail(OmsOrder rawOrder) {
         OmsOrderDetailVo detail = BeanCopyUtil.copyBean(rawOrder, OmsOrderDetailVo.class);
         assert detail != null;
+        Long orderId = rawOrder.getId();
 
         // 设置订单项
         CompletableFuture<List<OmsOrderItem>> itemFuture = CompletableFuture.supplyAsync(() -> {
@@ -191,6 +199,26 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         return omsOrderMapper.updateByExampleSelective(closeOrder, omsOrderExample);
     }
 
+    @Override
+    public List<OmsOrderDetailVo> detailList(Integer pageNum, Integer pageSize, OmsOrderQueryParams queryParam) {
+        PageHelper.startPage(pageNum, pageSize);
+        // 查询订单
+        OmsOrderExample omsOrderExample = checkAndGetExample(queryParam);
+        List<OmsOrder> omsOrders = omsOrderMapper.selectByExample(omsOrderExample);
+
+        if (CollectionUtils.isEmpty(omsOrders)) {
+            return new ArrayList<>();
+        }
+
+        // 查询订单详情信息
+        List<OmsOrderDetailVo> results = new ArrayList<>();
+        for (OmsOrder order : omsOrders) {
+            OmsOrderDetailVo detail = detail(order);
+            results.add(detail);
+        }
+        return results;
+    }
+
     /**
      * 根据请求参数获取查询条件
      */
@@ -224,6 +252,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
         if (Objects.nonNull(queryParam.getSourceType())) {
             criteria.andSourceTypeEqualTo(queryParam.getSourceType());
+        }
+
+        if (Objects.nonNull(queryParam.getMemberId())) {
+            criteria.andMemberIdEqualTo(queryParam.getMemberId());
         }
         return omsOrderExample;
     }

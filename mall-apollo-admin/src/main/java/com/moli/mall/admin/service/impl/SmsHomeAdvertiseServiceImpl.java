@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.moli.mall.admin.service.SmsHomeAdvertiseService;
 import com.moli.mall.common.utils.AssetsUtil;
 import com.moli.mall.mbg.mapper.SmsHomeAdvertiseMapper;
+import com.moli.mall.mbg.model.PmsBrand;
 import com.moli.mall.mbg.model.SmsHomeAdvertise;
 import com.moli.mall.mbg.model.SmsHomeAdvertiseExample;
 import org.springframework.stereotype.Service;
@@ -95,5 +96,13 @@ public class SmsHomeAdvertiseServiceImpl implements SmsHomeAdvertiseService {
         advertise.setClickCount(0);
         advertise.setOrderCount(0);
         return smsHomeAdvertiseMapper.insert(advertise);
+    }
+
+    @Override
+    public List<SmsHomeAdvertise> appList() {
+        SmsHomeAdvertiseExample smsHomeAdvertiseExample = new SmsHomeAdvertiseExample();
+        smsHomeAdvertiseExample.createCriteria().andStatusEqualTo(1).andTypeEqualTo(1);
+        smsHomeAdvertiseExample.setOrderByClause("sort desc");
+        return smsHomeAdvertiseMapper.selectByExample(smsHomeAdvertiseExample);
     }
 }

@@ -78,4 +78,10 @@ public class SmsHomeAdvertiseController {
         List<SmsHomeAdvertise> advertiseList = smsHomeAdvertiseService.list(name, type, endTime, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
         return CommonResult.success(CommonPage.restPage(advertiseList));
     }
+
+    @ApiOperation("查询app广告信息")
+    @GetMapping("/app/all")
+    public List<SmsHomeAdvertise> appList() {
+        return smsHomeAdvertiseService.appList();
+    }
 }

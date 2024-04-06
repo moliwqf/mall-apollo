@@ -6,6 +6,7 @@ import com.moli.mall.admin.dao.SmsHomeRecommendSubjectDao;
 import com.moli.mall.admin.service.SmsHomeRecommendSubjectService;
 import com.moli.mall.common.utils.AssetsUtil;
 import com.moli.mall.mbg.mapper.SmsHomeRecommendSubjectMapper;
+import com.moli.mall.mbg.model.CmsSubject;
 import com.moli.mall.mbg.model.SmsHomeRecommendSubject;
 import com.moli.mall.mbg.model.SmsHomeRecommendSubjectExample;
 import org.springframework.stereotype.Service;
@@ -95,5 +96,11 @@ public class SmsHomeRecommendSubjectServiceImpl implements SmsHomeRecommendSubje
             }
         }
         return smsHomeRecommendSubjectDao.insertList(homeBrandList);
+    }
+
+    @Override
+    public List<CmsSubject> appList(String subjectName, Integer pageNum, Integer pageSize) {
+        Integer page = (pageNum - 1) * pageSize;
+        return smsHomeRecommendSubjectDao.appList(subjectName, page, pageSize);
     }
 }

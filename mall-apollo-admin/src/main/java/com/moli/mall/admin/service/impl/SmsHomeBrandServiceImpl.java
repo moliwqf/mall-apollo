@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.moli.mall.admin.dao.SmsHomeBrandDao;
 import com.moli.mall.admin.service.SmsHomeBrandService;
 import com.moli.mall.mbg.mapper.SmsHomeBrandMapper;
+import com.moli.mall.mbg.model.PmsBrand;
 import com.moli.mall.mbg.model.SmsHomeBrand;
 import com.moli.mall.mbg.model.SmsHomeBrandExample;
 import org.springframework.stereotype.Service;
@@ -87,5 +88,11 @@ public class SmsHomeBrandServiceImpl implements SmsHomeBrandService {
             }
         }
         return smsHomeBrandDao.insertList(homeBrandList);
+    }
+
+    @Override
+    public List<PmsBrand> appList(String brandName, Integer showStatus, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        return smsHomeBrandDao.appList(brandName, showStatus);
     }
 }

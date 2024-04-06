@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author moli
@@ -33,6 +34,16 @@ public class CmsSubjectServiceImpl implements CmsSubjectService {
         CmsSubjectExample cmsSubjectExample = new CmsSubjectExample();
         if (StrUtil.isNotEmpty(keyword)) {
             cmsSubjectExample.createCriteria().andTitleLike("%" + keyword + "%");
+        }
+        return cmsSubjectMapper.selectByExample(cmsSubjectExample);
+    }
+
+    @Override
+    public List<CmsSubject> getSubjectList(Long cateId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        CmsSubjectExample cmsSubjectExample = new CmsSubjectExample();
+        if (Objects.nonNull(cateId)) {
+            cmsSubjectExample.createCriteria().andCategoryIdEqualTo(cateId);
         }
         return cmsSubjectMapper.selectByExample(cmsSubjectExample);
     }

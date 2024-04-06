@@ -39,4 +39,10 @@ public interface SmsHomeAdvertiseService {
      * 添加广告
      */
     int create(SmsHomeAdvertise advertise);
+
+    /**
+     * 查询广告信息
+     */
+    List<SmsHomeAdvertise> appList();
+
 }

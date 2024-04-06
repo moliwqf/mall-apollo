@@ -4,6 +4,7 @@ import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.service.SmsHomeBrandService;
 import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
+import com.moli.mall.mbg.model.PmsBrand;
 import com.moli.mall.mbg.model.SmsHomeBrand;
 import com.moli.mall.mbg.model.SmsHomeNewProduct;
 import io.swagger.annotations.Api;
@@ -71,6 +72,14 @@ public class SmsHomeBrandController {
     public CommonResult<CommonPage<SmsHomeBrand>> list(@RequestParam(value = "brandName", required = false) String brandName,
                                                        @RequestParam(value = "recommendStatus", required = false) Integer recommendStatus) {
         List<SmsHomeBrand> homeBrandList = smsHomeBrandService.list(brandName, recommendStatus, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
+        return CommonResult.success(CommonPage.restPage(homeBrandList));
+    }
+
+    @ApiOperation("分页查询主页推荐品牌app端")
+    @GetMapping(value = "/app/list")
+    public CommonResult<CommonPage<PmsBrand>> appList(@RequestParam(value = "brandName", required = false) String brandName,
+                                                      @RequestParam(value = "showStatus", defaultValue = "1") Integer showStatus) {
+        List<PmsBrand> homeBrandList = smsHomeBrandService.appList(brandName, showStatus, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
         return CommonResult.success(CommonPage.restPage(homeBrandList));
     }
 }

@@ -1,5 +1,6 @@
 package com.moli.mall.admin.service;
 
+import com.moli.mall.mbg.model.PmsBrand;
 import com.moli.mall.mbg.model.SmsHomeBrand;
 
 import java.util.List;
@@ -34,4 +35,10 @@ public interface SmsHomeBrandService {
      * 批量添加
      */
     int create(List<SmsHomeBrand> homeBrandList);
+
+    /**
+     * 根据品牌名和显示状态分页查询
+     */
+    List<PmsBrand> appList(String brandName, Integer showStatus, Integer pageNum, Integer pageSize);
+
 }

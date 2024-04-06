@@ -19,4 +19,10 @@ public interface CmsSubjectService {
      * 分页查询
      */
     List<CmsSubject> list(String keyword, Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据分类获取专题
+     * @param cateId 分类id
+     */
+    List<CmsSubject> getSubjectList(Long cateId, Integer pageNum, Integer pageSize);
 }

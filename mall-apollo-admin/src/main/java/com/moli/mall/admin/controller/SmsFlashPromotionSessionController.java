@@ -6,9 +6,7 @@ import com.moli.mall.common.domain.CommonResult;
 import com.moli.mall.mbg.model.SmsFlashPromotionSession;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,6 +23,47 @@ public class SmsFlashPromotionSessionController {
 
     @Resource
     private SmsFlashPromotionSessionService smsFlashPromotionSessionService;
+
+    @ApiOperation("添加场次")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public CommonResult<?> create(@RequestBody SmsFlashPromotionSession promotionSession) {
+        int count = smsFlashPromotionSessionService.create(promotionSession);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.fail();
+    }
+
+    @ApiOperation("删除场次")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public CommonResult<?> delete(@PathVariable Long id) {
+        int count = smsFlashPromotionSessionService.delete(id);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.fail();
+    }
+
+    @ApiOperation("修改场次")
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    public CommonResult<?> update(@PathVariable Long id,
+                                  @RequestBody SmsFlashPromotionSession promotionSession) {
+        int count = smsFlashPromotionSessionService.update(id, promotionSession);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.fail();
+    }
+
+    @ApiOperation("修改启用状态")
+    @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
+    public CommonResult<?> updateStatus(@PathVariable Long id, Integer status) {
+        int count = smsFlashPromotionSessionService.updateStatus(id, status);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.fail();
+    }
 
     @ApiOperation("获取全部可选场次及其数量")
     @RequestMapping(value = "/selectList", method = RequestMethod.GET)

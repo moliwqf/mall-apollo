@@ -2,6 +2,7 @@ package com.moli.mall.admin.controller;
 
 import com.moli.mall.admin.context.PageParamsContextHolder;
 import com.moli.mall.admin.service.SmsFlashPromotionService;
+import com.moli.mall.admin.vo.HomeFlashPromotionVo;
 import com.moli.mall.common.domain.CommonPage;
 import com.moli.mall.common.domain.CommonResult;
 import com.moli.mall.mbg.model.SmsFlashPromotion;
@@ -77,5 +78,12 @@ public class SmsFlashPromotionController {
     public CommonResult<?> list(@RequestParam(value = "keyword", required = false) String keyword) {
         List<SmsFlashPromotion> flashPromotionList = smsFlashPromotionService.list(keyword, PageParamsContextHolder.getPageNum(), PageParamsContextHolder.getPageSize());
         return CommonResult.success(CommonPage.restPage(flashPromotionList));
+    }
+
+    @ApiOperation("获取当前秒杀场次信息")
+    @RequestMapping(value = "/current", method = RequestMethod.GET)
+    public CommonResult<HomeFlashPromotionVo> getCurrentFlashPromotion() {
+        HomeFlashPromotionVo current = smsFlashPromotionService.getCurrentFlashPromotion();
+        return CommonResult.success(current);
     }
 }
