@@ -115,7 +115,7 @@ public class SmsFlashPromotionProductRelationServiceImpl implements SmsFlashProm
                 List<PmsProduct> pmsProducts = pmsProductMapper.selectByExample(pmsProductExample);
                 if (CollectionUtils.isEmpty(pmsProducts)) continue;
 
-                FlashPromotionProduct res = BeanCopyUtil.copyBean(relation, FlashPromotionProduct.class);
+                FlashPromotionProduct res = BeanCopyUtil.copyBean(pmsProducts.get(0), FlashPromotionProduct.class);
                 assert res != null;
 
                 res.setFlashPromotionPrice(relation.getFlashPromotionPrice());

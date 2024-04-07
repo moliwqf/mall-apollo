@@ -586,6 +586,9 @@ public class PmsProductServiceImpl implements PmsProductService {
 
             // 获取商品属性与参数
             CompletableFuture<List<PmsProductAttributeValue>> attrListFuture = CompletableFuture.supplyAsync(() -> {
+                        if (Objects.isNull(rawProduct.getProductAttributeCategoryId())) {
+                            return new ArrayList<PmsProductAttribute>();
+                        }
                         PmsProductAttributeExample pmsProductAttributeExample = new PmsProductAttributeExample();
                         pmsProductAttributeExample.createCriteria().andProductAttributeCategoryIdEqualTo(rawProduct.getProductAttributeCategoryId());
                         return pmsProductAttributeMapper.selectByExample(pmsProductAttributeExample);

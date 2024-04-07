@@ -19,7 +19,7 @@
         sfps.status status,
         sfps.create_time createTime
         from sms_flash_promotion_session sfps
-        where sfps.start_time >= #{date} and sfps.end_time &lt;= #{date}
+        where sfps.start_time &lt;= #{date} and sfps.end_time >= #{date}
         order by sfps.start_time
         limit 0, 1
     </select>
