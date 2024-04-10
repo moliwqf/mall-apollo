@@ -207,10 +207,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的价格区间
             List<PmsProductLadder> productLadderList = productParam.getProductLadderList();
             if (!CollectionUtils.isEmpty(productLadderList)) {
-                productLadderList.stream().peek(item -> {
+                for (PmsProductLadder item : productLadderList) {
                     item.setId(null);
                     item.setProductId(id);
-                });
+                }
                 pmsProductLadderDao.insertList(productLadderList);
             }
         });
@@ -225,10 +225,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的商品满减价格
             List<PmsProductFullReduction> productFullReductionList = productParam.getProductFullReductionList();
             if (!CollectionUtils.isEmpty(productFullReductionList)) {
-                productFullReductionList.stream().peek(item -> {
+                for (PmsProductFullReduction item : productFullReductionList) {
                     item.setId(null);
                     item.setProductId(id);
-                });
+                }
                 pmsProductFullReductionDao.insertList(productFullReductionList);
             }
         });
@@ -242,10 +242,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的数据
             List<PmsMemberPrice> memberPriceList = productParam.getMemberPriceList();
             if (!CollectionUtils.isEmpty(memberPriceList)) {
-                memberPriceList.stream().peek(item -> {
+                for (PmsMemberPrice item : memberPriceList) {
                     item.setId(null);
                     item.setProductId(id);
-                });
+                }
                 pmsMemberPriceDao.insertList(memberPriceList);
             }
         });
@@ -259,10 +259,14 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的sku信息
             List<PmsSkuStock> skuStockList = productParam.getSkuStockList();
             if (!CollectionUtils.isEmpty(skuStockList)) {
-                skuStockList.stream().peek(item -> {
+                for (int i = 0; i < skuStockList.size(); i++) {
+                    PmsSkuStock item = skuStockList.get(i);
                     item.setId(null);
                     item.setProductId(id);
-                });
+                    if (StrUtil.isEmpty(item.getSkuCode())) {
+                        this.handleSkuCode(item, id, i);
+                    }
+                }
                 pmsSkuStockDao.insertList(skuStockList);
             }
         });
@@ -276,10 +280,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的规格属性
             List<PmsProductAttributeValue> productAttributeValueList = productParam.getProductAttributeValueList();
             if (!CollectionUtils.isEmpty(productAttributeValueList)) {
-                productAttributeValueList.stream().peek(item -> {
+                for (PmsProductAttributeValue item : productAttributeValueList) {
                     item.setId(null);
                     item.setProductId(id);
-                });
+                }
                 pmsProductAttributeValueDao.insertList(productAttributeValueList);
             }
         });
@@ -293,13 +297,14 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的关系
             List<CmsSubjectProductRelation> subjectProductRelationList = productParam.getSubjectProductRelationList();
             if (!CollectionUtils.isEmpty(subjectProductRelationList)) {
-                subjectProductRelationList.stream().peek(item -> {
+                for (CmsSubjectProductRelation item : subjectProductRelationList) {
                     item.setId(null);
                     item.setProductId(id);
-                });
+                }
                 cmsSubjectProductRelationDao.insertList(subjectProductRelationList);
             }
         });
+
         CompletableFuture<Void> prefrenceAreaProductRelationsFuture = CompletableFuture.runAsync(() -> {
             // 优选专区和商品的关系
             // 删除之前的关系
@@ -309,10 +314,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             // 添加新的关系
             List<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationList = productParam.getPrefrenceAreaProductRelationList();
             if (!CollectionUtils.isEmpty(prefrenceAreaProductRelationList)) {
-                prefrenceAreaProductRelationList.stream().peek(item -> {
+                for (CmsPrefrenceAreaProductRelation item : prefrenceAreaProductRelationList) {
                     item.setId(null);
                     item.setProductId(id);
-                });
+                }
                 cmsPrefrenceAreaProductRelationDao.insertList(prefrenceAreaProductRelationList);
             }
         });

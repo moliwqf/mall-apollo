@@ -63,6 +63,8 @@ public class HomeServiceImpl implements HomeService {
         CommonResult<HomeFlashPromotionVo> result = smsFlashPromotionService.getCurrentFlashPromotion();
         if (Objects.nonNull(result.getData())) {
             content.setHomeFlashPromotion(result.getData());
+        } else {
+            content.setHomeFlashPromotion(new HomeFlashPromotionVo());
         }
 
         // 查询新品推荐

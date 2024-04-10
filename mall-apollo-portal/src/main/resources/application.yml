@@ -1,6 +1,9 @@
 server:
   port: 8085
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
@@ -20,6 +23,12 @@ spring:
     port: 6379 # Redis服务器连接端口
     password:  # Redis服务器连接密码（默认为空）
     timeout: 3000ms # 连接超时时间（毫秒）
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
   data:
     mongodb:
       database: mall-portal
@@ -34,4 +43,10 @@ redis:
   expire-time: 86400
   key:
     prefix:
+      order: oms:order
       member: ums:member
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

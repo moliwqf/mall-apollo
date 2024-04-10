@@ -19,7 +19,7 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     @Override
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
-                .apiBasePackage("com.moli.mall.controller")
+                .apiBasePackage("com.moli.mall.auth.controller")
                 .title("mall-apollo后台系统")
                 .description("mall-apollo后台相关接口文档")
                 .contactName("moli")

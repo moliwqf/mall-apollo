@@ -25,6 +25,10 @@ public class CommonResult<T> {
         return new CommonResult<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
     }
 
+    public static <T> CommonResult<T> success(T data, String message) {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, data);
+    }
+
     public static <T> CommonResult<T> fail(String message) {
         return new CommonResult<T>(ResultCode.FAILED.getCode(), message, null);
     }

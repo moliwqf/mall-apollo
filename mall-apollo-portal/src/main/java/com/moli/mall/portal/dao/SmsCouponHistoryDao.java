@@ -1,6 +1,7 @@
 package com.moli.mall.portal.dao;
 
 import com.moli.mall.mbg.model.SmsCoupon;
+import com.moli.mall.portal.vo.SmsCouponHistoryDetailVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,9 @@ public interface SmsCouponHistoryDao {
      */
     List<SmsCoupon> listHistories(@Param("memberId") Long memberId, @Param("useStatus") Integer useStatus);
 
+    /**
+     * 根据用户id获取用户所有的优惠券信息
+     * @param memberId 用户id
+     */
+    List<SmsCouponHistoryDetailVo> getDetailList(@Param("memberId") Long memberId);
 }

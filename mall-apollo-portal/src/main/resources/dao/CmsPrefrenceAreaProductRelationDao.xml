@@ -25,4 +25,40 @@
         left join sms_coupon sc on sch.coupon_id = sc.id
         where sch.member_id = #{memberId} and sch.use_status = #{useStatus}
     </select>
+    <resultMap id="SmsCouponHistoryDetailVo"
+               extends="com.moli.mall.mbg.mapper.SmsCouponHistoryMapper.BaseResultMap"
+               type="com.moli.mall.portal.vo.SmsCouponHistoryDetailVo">
+        <association property="coupon"
+                     columnPrefix="c_"
+                     resultMap="com.moli.mall.mbg.mapper.SmsCouponMapper.BaseResultMap" />
+        <collection property="productRelationList"
+                    columnPrefix="cpr_"
+                    resultMap="com.moli.mall.mbg.mapper.SmsCouponProductRelationMapper.BaseResultMap" />
+        <collection property="categoryRelationList"
+                    columnPrefix="cpcr_"
+                    resultMap="com.moli.mall.mbg.mapper.SmsCouponProductCategoryRelationMapper.BaseResultMap" />
+    </resultMap>
+    <select id="getDetailList" resultMap="SmsCouponHistoryDetailVo">
+        select
+        ch.*,
+        c.id c_id,
+        c.name c_name,
+        c.amount c_amount,
+        c.min_point c_min_point,
+        c.platform c_platform,
+        c.start_time c_start_time,
+        c.end_time c_end_time,
+        c.note c_note,
+        c.use_type c_use_type,
+        c.type c_type,
+        cpr.id cpr_id,
+        cpr.product_id cpr_product_id,
+        cpcr.id cpcr_id,
+        cpcr.product_category_id cpcr_product_category_id
+        from sms_coupon_history ch
+        left join sms_coupon c on ch.coupon_id = c.id
+        left join sms_coupon_product_category_relation cpcr on c.id = cpcr.coupon_id
+        left join sms_coupon_product_relation cpr on cpr.coupon_id = c.id
+        where ch.member_id = #{memberId} and ch.use_status = 0
+    </select>
 </mapper>

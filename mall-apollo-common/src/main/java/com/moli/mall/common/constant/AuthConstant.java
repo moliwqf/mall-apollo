@@ -101,4 +101,9 @@ public interface AuthConstant {
      * Redis缓存权限规则key
      */
     String RESOURCE_ROLES_MAP_KEY = "auth:resourceRolesMap";
+
+    /**
+     * 后台管理接口路径匹配
+     */
+    String ADMIN_URL_PATTERN = "/mall-admin/**";
 }

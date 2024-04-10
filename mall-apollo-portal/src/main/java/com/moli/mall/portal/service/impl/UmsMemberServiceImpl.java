@@ -20,6 +20,7 @@ import com.moli.mall.portal.service.UmsMemberCacheService;
 import com.moli.mall.portal.service.UmsMemberService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -102,6 +103,21 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             umsAdminCacheService.setMember(member.getId(), currentMember);
         }
         return currentMember;
+    }
+
+    @Override
+    public UmsMember infoById(Long id) {
+        return umsMemberMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    @Transactional
+    public void updateIntegration(Long id, Integer integration) {
+        UmsMember member = new UmsMember();
+        member.setId(id);
+        member.setIntegration(integration);
+        umsMemberMapper.updateByPrimaryKeySelective(member);
+        getUmsMemberCacheService().delMember(id);
     }
 
     public UmsMemberCacheService getUmsMemberCacheService() {

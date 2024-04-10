@@ -11,6 +11,12 @@ spring:
           enabled: true # 设置为true启用服务发现定位器
           lower-case-service-id: true # 开启小写模式
       routes:
+        - id: mall-search
+          uri: lb://mall-search
+          predicates:
+            - Path=/mall-search/**
+          filters:
+            - StripPrefix=1
         - id: mall-portal
           uri: lb://mall-portal
           predicates:
@@ -38,11 +44,23 @@ spring:
     port: 6379
     host: localhost
     password:
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
 secure:
   ignore:
     urls: #配置白名单路径
+      - "/webjars/**"
+      - "/actuator/**"
       - "/doc.html"
+      - "/swagger-resources/**"
+      - "/swagger/**"
+      - "/*/v2/api-docs"
       - "/mall-portal/sso/login"
       - "/mall-portal/home/**"
       - "/mall-auth/rsa/publicKey"

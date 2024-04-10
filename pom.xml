@@ -22,6 +22,8 @@
         <module>mall-apollo-mbg</module>
         <module>mall-apollo-auth</module>
         <module>mall-apollo-portal</module>
+        <module>mall-apollo-search</module>
+        <module>mall-apollo-monitor</module>
     </modules>
 
     <properties>

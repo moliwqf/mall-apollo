@@ -20,11 +20,11 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
                 .apiBasePackage("com.moli.mall.portal.controller")
-                .title("mall前台系统")
-                .description("mall前台相关接口文档")
+                .title("mall-apollo前台系统")
+                .description("mall-apollo前台相关接口文档")
                 .contactName("moli")
                 .version("1.0")
-                .enableSecurity(true)
+                .enableSecurity(false)
                 .build();
     }
 

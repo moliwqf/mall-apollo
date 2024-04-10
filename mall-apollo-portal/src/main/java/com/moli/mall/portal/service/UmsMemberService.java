@@ -43,4 +43,14 @@ public interface UmsMemberService {
      * 获取当前登录的用户信息
      */
     UmsMember info();
+
+    /**
+     * 获取指定用户
+     */
+    UmsMember infoById(Long id);
+
+    /**
+     * 更新用户积分
+     */
+    void updateIntegration(Long id, Integer integration);
 }
